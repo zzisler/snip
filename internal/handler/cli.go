@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"log"
+	"fmt"
 	"os"
 	"snip/internal/service"
 	"snip/internal/storage"
@@ -11,22 +11,56 @@ var code string
 
 func Cli() {
 
+	if len(os.Args) < 2 {
+		fmt.Println("usage: snip <command>. Use 'snip help' for more info.")
+		return
+	}
+
 	switch os.Args[1] {
+	case "help":
+
+		fmt.Println("Usage: <command> [options] [arguments]\n" +
+			"  Available commands:\n" +
+			"   - add <url>\n" +
+			"      Add a new URL to shorten and receive a short code.\n" +
+			"   - get <code>\n" +
+			"      Retrieve the original URL by using the provided short code.")
+
 	case "add":
-		code = service.GenCode()
-		result := storage.Save(code, os.Args[2])
-		if result != nil {
-			log.Fatal(result)
+
+		if len(os.Args) < 3 {
+			fmt.Println("usage: snip add <url>")
+			return
 		}
-		log.Print(code)
+
+		code = service.GenCode()
+
+		err := storage.Save(code, os.Args[2])
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		fmt.Println(code)
+
 	case "get":
+
+		if len(os.Args) < 3 {
+			fmt.Println("usage: snip get <code>")
+			return
+		}
+
 		result, err := storage.Get(os.Args[2])
 		if err != nil {
-			log.Fatal(err)
+			fmt.Println(result)
+			return
 		}
-		log.Print(result.URL)
+
+		fmt.Println(result.URL)
+
 	default:
-		log.Fatal("unknown command")
+		fmt.Println("unknown command")
+		return
 	}
 
 }
