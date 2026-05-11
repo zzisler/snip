@@ -25,7 +25,9 @@ func Cli() {
 			"   - add <url>\n" +
 			"      Add a new URL to shorten and receive a short code.\n" +
 			"   - get <code>\n" +
-			"      Retrieve the original URL by using the provided short code.")
+			"      Retrieve the original URL by using the provided short code.\n" +
+			"   - serve\n" +
+			"      Start the HTTP server on the port specified in .env")
 
 	case "add":
 
